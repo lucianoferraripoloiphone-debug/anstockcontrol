@@ -132,11 +132,11 @@ export const uploadPartPhoto = createServerFn({ method: "POST" })
 
     const match = /^data:(image\/[a-zA-Z+]+);base64,(.+)$/.exec(data.dataUrl);
     if (!match) throw new Error("Invalid image");
-    const mime = match[1];
-    const bytes = Buffer.from(match[2], "base64");
+    const mime = match[1] ?? "image/jpeg";
+    const bytes = Buffer.from(match[2] ?? "", "base64");
     if (bytes.byteLength > 6 * 1024 * 1024) throw new Error("Image too large (max 6MB)");
 
-    const ext = mime.split("/")[1].replace("jpeg", "jpg");
+    const ext = (mime.split("/")[1] ?? "jpg").replace("jpeg", "jpg");
     const path = `${crypto.randomUUID()}.${ext}`;
     const { error } = await supabaseAdmin.storage
       .from("part-photos")
