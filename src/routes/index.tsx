@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-import logo from "@/assets/applied-nutrition-logo.png";
+const logo = "/__l5e/assets-v1/198b100d-f9fb-4b15-9ad5-49864912c89d/applied-nutrition-logo.png";
 import { AdminGateDialog } from "@/components/AdminGateDialog";
 import { PartFormDialog } from "@/components/PartFormDialog";
 import { PhotoSearchDialog } from "@/components/PhotoSearchDialog";
