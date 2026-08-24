@@ -315,7 +315,34 @@ function Index() {
                   return (
                     <TableRow key={part.id}>
                       <TableCell>
-                        {part.photo_signed_url ? (
+                        {isAdmin ? (
+                          <button
+                            type="button"
+                            title="Add or change photo"
+                            aria-label={`Add or change photo for ${part.model}`}
+                            className="group relative block h-10 w-10 overflow-hidden rounded border"
+                            onClick={() => {
+                              setEditing(part);
+                              setFormOpen(true);
+                            }}
+                          >
+                            {part.photo_signed_url ? (
+                              <img
+                                src={part.photo_signed_url}
+                                alt={part.model}
+                                loading="lazy"
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <span className="flex h-full w-full items-center justify-center border-dashed text-muted-foreground">
+                                <Camera className="h-4 w-4" />
+                              </span>
+                            )}
+                            <span className="absolute inset-0 hidden items-center justify-center bg-foreground/60 text-background group-hover:flex">
+                              <Camera className="h-4 w-4" />
+                            </span>
+                          </button>
+                        ) : part.photo_signed_url ? (
                           <img
                             src={part.photo_signed_url}
                             alt={part.model}
@@ -328,6 +355,7 @@ function Index() {
                           </div>
                         )}
                       </TableCell>
+
                       <TableCell className="font-semibold">{part.model}</TableCell>
                       <TableCell>
                         <Badge variant="secondary">{part.category}</Badge>
