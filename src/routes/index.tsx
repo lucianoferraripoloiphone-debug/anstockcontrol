@@ -274,6 +274,27 @@ function Index() {
           )}
         </div>
 
+        {(query || category !== "ALL" || onlyLow) && (
+          <div className="mt-3 flex flex-wrap items-center gap-3 rounded-md border bg-muted/40 px-3 py-2 text-sm">
+            <span className="text-muted-foreground">
+              Showing <strong className="text-foreground">{filtered.length}</strong> of{" "}
+              <strong className="text-foreground">{parts.length}</strong> parts
+              {onlyLow && " — low stock filter is on, parts above minimum are hidden"}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setQuery("");
+                setCategory("ALL");
+                setOnlyLow(false);
+              }}
+            >
+              Clear filters
+            </Button>
+          </div>
+        )}
+
 
         <Card className="mt-4">
           <CardContent className="overflow-x-auto p-0">
