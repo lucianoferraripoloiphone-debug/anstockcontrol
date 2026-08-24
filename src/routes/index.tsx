@@ -289,7 +289,10 @@ function Index() {
                   <TableHead>Location</TableHead>
                   <TableHead className="text-right">Qty</TableHead>
                   <TableHead className="text-right">Min</TableHead>
-                  {isAdmin && <TableHead className="text-right">Actions</TableHead>}
+                  {isAdmin && (
+                    <TableHead className="sticky right-0 bg-card text-right">Actions</TableHead>
+                  )}
+
                 </TableRow>
               </TableHeader>
               <TableBody>
