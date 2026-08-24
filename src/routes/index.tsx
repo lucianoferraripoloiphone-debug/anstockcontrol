@@ -379,7 +379,8 @@ function Index() {
                         {part.min_stock}
                       </TableCell>
                       {isAdmin && (
-                        <TableCell>
+                        <TableCell className="sticky right-0 bg-card">
+
                           <div className="flex justify-end gap-1">
                             <Button
                               variant="ghost"
