@@ -260,7 +260,20 @@ function Index() {
           >
             <FileDown className="mr-2 h-4 w-4" /> PDF low stock
           </Button>
+
+          {isAdmin && (
+            <Button
+              size="sm"
+              onClick={() => {
+                setEditing(null);
+                setFormOpen(true);
+              }}
+            >
+              <Plus className="mr-2 h-4 w-4" /> New part
+            </Button>
+          )}
         </div>
+
 
         <Card className="mt-4">
           <CardContent className="overflow-x-auto p-0">
