@@ -261,6 +261,23 @@ function Index() {
             <FileDown className="mr-2 h-4 w-4" /> PDF low stock
           </Button>
 
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => exportPartsXlsx(filtered, "Parts list")}
+          >
+            <FileSpreadsheet className="mr-2 h-4 w-4" /> Excel list
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => exportPartsXlsx(lowStock, "Low stock report")}
+            disabled={lowStock.length === 0}
+          >
+            <FileSpreadsheet className="mr-2 h-4 w-4" /> Excel low stock
+          </Button>
+
           {isAdmin && (
             <Button
               size="sm"
