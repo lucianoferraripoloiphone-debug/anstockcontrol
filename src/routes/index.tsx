@@ -90,6 +90,7 @@ function Index() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("ALL");
   const [onlyLow, setOnlyLow] = useState(false);
+  const [onlyZero, setOnlyZero] = useState(false);
   const [gateOpen, setGateOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [photoOpen, setPhotoOpen] = useState(false);
