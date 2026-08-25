@@ -6,6 +6,7 @@ import {
   AlertTriangle,
   Camera,
   FileDown,
+  FileSpreadsheet,
   Lock,
   LockOpen,
   Minus,
@@ -47,6 +48,7 @@ import {
   lockAdmin,
 } from "@/lib/inventory.functions";
 import { exportPartsPdf } from "@/lib/pdf";
+import { exportPartsXlsx } from "@/lib/xlsx";
 import type { Part } from "@/lib/types";
 
 export const Route = createFileRoute("/")({
