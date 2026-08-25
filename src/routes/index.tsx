@@ -209,88 +209,105 @@ function Index() {
           </div>
         )}
 
-        <div className="mt-6 flex flex-wrap items-center gap-3">
-          <div className="relative min-w-[240px] flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by model, description, machine, line or location"
-              className="pl-9"
-            />
+        <div className="mt-6 flex flex-col gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="relative min-w-[200px] flex-1">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search by model, description, machine, line or location"
+                className="pl-9"
+              />
+            </div>
+
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger className="w-[170px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">All categories</SelectItem>
+                {categories.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Button
+              variant={onlyLow ? "default" : "outline"}
+              size="sm"
+              className="h-9 gap-1.5 text-xs"
+              onClick={() => setOnlyLow((v) => !v)}
+            >
+              <AlertTriangle className="h-3.5 w-3.5" /> Low stock
+            </Button>
+
+            <Button
+              variant="default"
+              size="icon"
+              className="h-12 w-12 shrink-0 rounded-xl shadow-sm"
+              onClick={() => setPhotoOpen(true)}
+              aria-label="Photo search"
+              title="Photo search"
+            >
+              <Camera className="h-6 w-6" />
+            </Button>
           </div>
 
-          <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger className="w-[190px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ALL">All categories</SelectItem>
-              {categories.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Button
-            variant={onlyLow ? "default" : "outline"}
-            size="sm"
-            onClick={() => setOnlyLow((v) => !v)}
-          >
-            <AlertTriangle className="mr-2 h-4 w-4" /> Low stock only
-          </Button>
-
-          <Button variant="outline" size="sm" onClick={() => setPhotoOpen(true)}>
-            <Camera className="mr-2 h-4 w-4" /> Photo search
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => exportPartsPdf(filtered, "Parts list")}
-          >
-            <FileDown className="mr-2 h-4 w-4" /> PDF list
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => exportPartsPdf(lowStock, "Low stock report")}
-            disabled={lowStock.length === 0}
-          >
-            <FileDown className="mr-2 h-4 w-4" /> PDF low stock
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => exportPartsXlsx(filtered, "Parts list")}
-          >
-            <Sheet className="mr-2 h-4 w-4" /> Excel list
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => exportPartsXlsx(lowStock, "Low stock report")}
-            disabled={lowStock.length === 0}
-          >
-            <Sheet className="mr-2 h-4 w-4" /> Excel low stock
-          </Button>
-
-          {isAdmin && (
+          <div className="flex flex-wrap items-center gap-2">
             <Button
+              variant="outline"
               size="sm"
-              onClick={() => {
-                setEditing(null);
-                setFormOpen(true);
-              }}
+              className="h-8 gap-1.5 px-2.5 text-xs"
+              onClick={() => exportPartsPdf(filtered, "Parts list")}
             >
-              <Plus className="mr-2 h-4 w-4" /> New part
+              <FileDown className="h-3.5 w-3.5" /> PDF list
             </Button>
-          )}
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 gap-1.5 px-2.5 text-xs"
+              onClick={() => exportPartsPdf(lowStock, "Low stock report")}
+              disabled={lowStock.length === 0}
+            >
+              <FileDown className="h-3.5 w-3.5" /> PDF low
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 gap-1.5 px-2.5 text-xs"
+              onClick={() => exportPartsXlsx(filtered, "Parts list")}
+            >
+              <Sheet className="h-3.5 w-3.5" /> Excel list
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 gap-1.5 px-2.5 text-xs"
+              onClick={() => exportPartsXlsx(lowStock, "Low stock report")}
+              disabled={lowStock.length === 0}
+            >
+              <Sheet className="h-3.5 w-3.5" /> Excel low
+            </Button>
+
+            {isAdmin && (
+              <Button
+                size="sm"
+                className="h-8 gap-1.5 px-2.5 text-xs"
+                onClick={() => {
+                  setEditing(null);
+                  setFormOpen(true);
+                }}
+              >
+                <Plus className="h-3.5 w-3.5" /> New part
+              </Button>
+            )}
+          </div>
         </div>
 
         {(query || category !== "ALL" || onlyLow) && (
