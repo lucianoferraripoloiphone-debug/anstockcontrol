@@ -6,7 +6,7 @@ import {
   AlertTriangle,
   Camera,
   FileDown,
-  FileSpreadsheet,
+  Sheet,
   Lock,
   LockOpen,
   Minus,
@@ -268,7 +268,7 @@ function Index() {
             size="sm"
             onClick={() => exportPartsXlsx(filtered, "Parts list")}
           >
-            <FileSpreadsheet className="mr-2 h-4 w-4" /> Excel list
+            <Sheet className="mr-2 h-4 w-4" /> Excel list
           </Button>
 
           <Button
@@ -277,7 +277,7 @@ function Index() {
             onClick={() => exportPartsXlsx(lowStock, "Low stock report")}
             disabled={lowStock.length === 0}
           >
-            <FileSpreadsheet className="mr-2 h-4 w-4" /> Excel low stock
+            <Sheet className="mr-2 h-4 w-4" /> Excel low stock
           </Button>
 
           {isAdmin && (
