@@ -320,12 +320,13 @@ function Index() {
           </div>
         </div>
 
-        {(query || category !== "ALL" || onlyLow) && (
+        {(query || category !== "ALL" || onlyLow || onlyZero) && (
           <div className="mt-3 flex flex-wrap items-center gap-3 rounded-md border bg-muted/40 px-3 py-2 text-sm">
             <span className="text-muted-foreground">
               Showing <strong className="text-foreground">{filtered.length}</strong> of{" "}
               <strong className="text-foreground">{parts.length}</strong> parts
-              {onlyLow && " — low stock filter is on, parts above minimum are hidden"}
+              {onlyLow && " — low stock filter is on"}
+              {onlyZero && " — showing only out-of-stock parts"}
             </span>
             <Button
               variant="outline"
@@ -334,6 +335,7 @@ function Index() {
                 setQuery("");
                 setCategory("ALL");
                 setOnlyLow(false);
+                setOnlyZero(false);
               }}
             >
               Clear filters
