@@ -185,18 +185,25 @@ function Index() {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-6">
-        <div className="grid gap-4 sm:grid-cols-3">
-          <StatCard label="Parts registered" value={parts.length} icon={Package} />
+        <div className="grid grid-cols-4 gap-2 sm:gap-4">
+          <StatCard label="Parts" value={parts.length} icon={Package} />
           <StatCard
-            label="Total items in stock"
+            label="In stock"
             value={parts.reduce((sum, p) => sum + p.quantity, 0)}
             icon={Package}
           />
           <StatCard
-            label="Below minimum stock"
+            label="Low stock"
             value={lowStock.length}
             icon={AlertTriangle}
             alert={lowStock.length > 0}
+          />
+          <StatCard
+            label="Out of stock"
+            value={zeroStock.length}
+            icon={AlertTriangle}
+            alert={zeroStock.length > 0}
+            onClick={() => setOnlyZero(true)}
           />
         </div>
 
