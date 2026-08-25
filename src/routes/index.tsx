@@ -101,19 +101,21 @@ function Index() {
     [parts],
   );
 
-  const lowStock = parts.filter((p) => p.quantity <= p.min_stock);
+  const lowStock = parts.filter((p) => p.quantity <= p.min_stock && p.quantity > 0);
+  const zeroStock = parts.filter((p) => p.quantity === 0);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return parts.filter((p) => {
       if (category !== "ALL" && p.category !== category) return false;
-      if (onlyLow && p.quantity > p.min_stock) return false;
+      if (onlyLow && (p.quantity > p.min_stock || p.quantity === 0)) return false;
+      if (onlyZero && p.quantity !== 0) return false;
       if (!q) return true;
       return [p.model, p.description, p.machine, p.line, p.location, p.category]
         .filter(Boolean)
         .some((value) => String(value).toLowerCase().includes(q));
     });
-  }, [parts, query, category, onlyLow]);
+  }, [parts, query, category, onlyLow, onlyZero]);
 
   async function handleDelete(part: Part) {
     if (!confirm(`Delete "${part.model}"?`)) return;
