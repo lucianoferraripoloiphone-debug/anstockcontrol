@@ -90,6 +90,7 @@ function Index() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("ALL");
   const [onlyLow, setOnlyLow] = useState(false);
+  const [onlyZero, setOnlyZero] = useState(false);
   const [gateOpen, setGateOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [photoOpen, setPhotoOpen] = useState(false);
@@ -100,19 +101,21 @@ function Index() {
     [parts],
   );
 
-  const lowStock = parts.filter((p) => p.quantity <= p.min_stock);
+  const lowStock = parts.filter((p) => p.quantity <= p.min_stock && p.quantity > 0);
+  const zeroStock = parts.filter((p) => p.quantity === 0);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return parts.filter((p) => {
       if (category !== "ALL" && p.category !== category) return false;
-      if (onlyLow && p.quantity > p.min_stock) return false;
+      if (onlyLow && (p.quantity > p.min_stock || p.quantity === 0)) return false;
+      if (onlyZero && p.quantity !== 0) return false;
       if (!q) return true;
       return [p.model, p.description, p.machine, p.line, p.location, p.category]
         .filter(Boolean)
         .some((value) => String(value).toLowerCase().includes(q));
     });
-  }, [parts, query, category, onlyLow]);
+  }, [parts, query, category, onlyLow, onlyZero]);
 
   async function handleDelete(part: Part) {
     if (!confirm(`Delete "${part.model}"?`)) return;
@@ -182,18 +185,28 @@ function Index() {
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-6">
-        <div className="grid gap-4 sm:grid-cols-3">
-          <StatCard label="Parts registered" value={parts.length} icon={Package} />
+        <div className="grid grid-cols-4 gap-2 sm:gap-4">
+          <StatCard label="Parts" value={parts.length} icon={Package} />
           <StatCard
-            label="Total items in stock"
+            label="In stock"
+            shortLabel="Stock"
             value={parts.reduce((sum, p) => sum + p.quantity, 0)}
             icon={Package}
           />
           <StatCard
-            label="Below minimum stock"
+            label="Low stock"
+            shortLabel="Low"
             value={lowStock.length}
             icon={AlertTriangle}
             alert={lowStock.length > 0}
+          />
+          <StatCard
+            label="Out of stock"
+            shortLabel="Zero"
+            value={zeroStock.length}
+            icon={AlertTriangle}
+            alert={zeroStock.length > 0}
+            onClick={() => setOnlyZero(true)}
           />
         </div>
 
@@ -310,12 +323,13 @@ function Index() {
           </div>
         </div>
 
-        {(query || category !== "ALL" || onlyLow) && (
+        {(query || category !== "ALL" || onlyLow || onlyZero) && (
           <div className="mt-3 flex flex-wrap items-center gap-3 rounded-md border bg-muted/40 px-3 py-2 text-sm">
             <span className="text-muted-foreground">
               Showing <strong className="text-foreground">{filtered.length}</strong> of{" "}
               <strong className="text-foreground">{parts.length}</strong> parts
-              {onlyLow && " — low stock filter is on, parts above minimum are hidden"}
+              {onlyLow && " — low stock filter is on"}
+              {onlyZero && " — showing only out-of-stock parts"}
             </span>
             <Button
               variant="outline"
@@ -324,6 +338,7 @@ function Index() {
                 setQuery("");
                 setCategory("ALL");
                 setOnlyLow(false);
+                setOnlyZero(false);
               }}
             >
               Clear filters
@@ -510,27 +525,40 @@ function Index() {
 
 function StatCard({
   label,
+  shortLabel,
   value,
   icon: Icon,
   alert,
+  onClick,
 }: {
   label: string;
+  shortLabel?: string;
   value: number;
   icon: typeof Package;
   alert?: boolean;
+  onClick?: () => void;
 }) {
   return (
-    <Card>
-      <CardContent className="flex items-center justify-between p-5">
-        <div>
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
+    <Card className={onClick ? "cursor-pointer transition-shadow hover:shadow-md" : undefined} onClick={onClick}>
+      <CardContent className="flex items-center justify-between p-2.5 sm:p-4">
+        <div className="min-w-0">
+          <p className="text-[10px] uppercase tracking-wide text-muted-foreground sm:text-xs">
+            {shortLabel ? (
+              <>
+                <span className="sm:hidden">{shortLabel}</span>
+                <span className="hidden sm:inline">{label}</span>
+              </>
+            ) : (
+              label
+            )}
+          </p>
           <p
-            className={`font-display text-3xl ${alert ? "text-destructive" : "text-foreground"}`}
+            className={`font-display text-lg sm:text-2xl ${alert ? "text-destructive" : "text-foreground"}`}
           >
             {value}
           </p>
         </div>
-        <Icon className={`h-8 w-8 ${alert ? "text-destructive" : "text-primary"}`} />
+        <Icon className={`h-4 w-4 shrink-0 sm:h-5 sm:w-5 ${alert ? "text-destructive" : "text-primary"}`} />
       </CardContent>
     </Card>
   );
