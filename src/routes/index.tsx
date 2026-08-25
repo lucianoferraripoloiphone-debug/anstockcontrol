@@ -189,17 +189,20 @@ function Index() {
           <StatCard label="Parts" value={parts.length} icon={Package} />
           <StatCard
             label="In stock"
+            shortLabel="Stock"
             value={parts.reduce((sum, p) => sum + p.quantity, 0)}
             icon={Package}
           />
           <StatCard
             label="Low stock"
+            shortLabel="Low"
             value={lowStock.length}
             icon={AlertTriangle}
             alert={lowStock.length > 0}
           />
           <StatCard
             label="Out of stock"
+            shortLabel="Zero"
             value={zeroStock.length}
             icon={AlertTriangle}
             alert={zeroStock.length > 0}
