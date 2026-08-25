@@ -525,12 +525,14 @@ function Index() {
 
 function StatCard({
   label,
+  shortLabel,
   value,
   icon: Icon,
   alert,
   onClick,
 }: {
   label: string;
+  shortLabel?: string;
   value: number;
   icon: typeof Package;
   alert?: boolean;
@@ -540,7 +542,16 @@ function StatCard({
     <Card className={onClick ? "cursor-pointer transition-shadow hover:shadow-md" : undefined} onClick={onClick}>
       <CardContent className="flex items-center justify-between p-2.5 sm:p-4">
         <div className="min-w-0">
-          <p className="text-[10px] uppercase tracking-wide text-muted-foreground sm:text-xs">{label}</p>
+          <p className="text-[10px] uppercase tracking-wide text-muted-foreground sm:text-xs">
+            {shortLabel ? (
+              <>
+                <span className="sm:hidden">{shortLabel}</span>
+                <span className="hidden sm:inline">{label}</span>
+              </>
+            ) : (
+              label
+            )}
+          </p>
           <p
             className={`font-display text-lg sm:text-2xl ${alert ? "text-destructive" : "text-foreground"}`}
           >
