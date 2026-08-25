@@ -523,24 +523,26 @@ function StatCard({
   value,
   icon: Icon,
   alert,
+  onClick,
 }: {
   label: string;
   value: number;
   icon: typeof Package;
   alert?: boolean;
+  onClick?: () => void;
 }) {
   return (
-    <Card>
-      <CardContent className="flex items-center justify-between p-5">
-        <div>
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
+    <Card className={onClick ? "cursor-pointer transition-shadow hover:shadow-md" : undefined} onClick={onClick}>
+      <CardContent className="flex items-center justify-between p-2.5 sm:p-4">
+        <div className="min-w-0">
+          <p className="text-[10px] uppercase tracking-wide text-muted-foreground sm:text-xs">{label}</p>
           <p
-            className={`font-display text-3xl ${alert ? "text-destructive" : "text-foreground"}`}
+            className={`font-display text-lg sm:text-2xl ${alert ? "text-destructive" : "text-foreground"}`}
           >
             {value}
           </p>
         </div>
-        <Icon className={`h-8 w-8 ${alert ? "text-destructive" : "text-primary"}`} />
+        <Icon className={`h-4 w-4 shrink-0 sm:h-5 sm:w-5 ${alert ? "text-destructive" : "text-primary"}`} />
       </CardContent>
     </Card>
   );
