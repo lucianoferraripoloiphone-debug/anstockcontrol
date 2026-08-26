@@ -349,24 +349,37 @@ function Index() {
 
         <Card className="mt-4">
           <CardContent className="overflow-x-auto p-0">
-            <Table>
+            <Table
+              ref={tableRef}
+              className="table-fixed [&_td]:truncate [&_td]:border-r [&_th]:border-r [&_td:last-child]:border-r-0 [&_th:last-child]:border-r-0"
+            >
+              <colgroup>
+                {columns.map((c) => (
+                  <col key={c.key} style={{ width: `${widths[c.key] ?? c.w}px` }} />
+                ))}
+              </colgroup>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[70px]">Photo</TableHead>
-                  <TableHead>Model</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Machine</TableHead>
-                  <TableHead>Line</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead className="text-right">Price</TableHead>
-                  <TableHead className="text-right">Qty</TableHead>
-                  <TableHead className="text-right">Min</TableHead>
-                  {isAdmin && (
-                    <TableHead className="sticky right-0 bg-card text-right">Actions</TableHead>
-                  )}
-
+                  {columns.map((c, i) => (
+                    <TableHead
+                      key={c.key}
+                      className={`relative select-none ${c.align === "right" ? "text-right" : ""} ${
+                        c.key === "actions" ? "sticky right-0 bg-card" : ""
+                      }`}
+                    >
+                      {c.label}
+                      <span
+                        role="separator"
+                        aria-label={`Resize ${c.label} column`}
+                        title="Drag to resize — double-click to auto-fit"
+                        onPointerDown={(e) => startResize(e, c.key)}
+                        onDoubleClick={() => autoFit(c.key, i)}
+                        className="absolute right-0 top-0 z-10 h-full w-2 translate-x-1/2 cursor-col-resize touch-none hover:bg-primary/40"
+                      />
+                    </TableHead>
+                  ))}
                 </TableRow>
+
               </TableHeader>
               <TableBody>
                 {isLoading && (
