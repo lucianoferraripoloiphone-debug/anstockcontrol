@@ -29,6 +29,7 @@ export type PartInput = {
   machine?: string | null;
   line?: string | null;
   photo_url?: string | null;
+  price?: number | null;
 };
 
 export const CATEGORIES = [
