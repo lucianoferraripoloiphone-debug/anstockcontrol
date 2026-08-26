@@ -66,6 +66,7 @@ export function PartFormDialog({ open, onOpenChange, part, onSaved }: Props) {
         location: part.location ?? "",
         machine: part.machine ?? "",
         line: part.line ?? "",
+        price: part.price === null || part.price === undefined ? "" : String(part.price),
       });
       setPhotoPath(part.photo_url);
       setPhotoPreview(part.photo_signed_url ?? null);
@@ -109,6 +110,7 @@ export function PartFormDialog({ open, onOpenChange, part, onSaved }: Props) {
           location: form.location,
           machine: form.machine,
           line: form.line,
+          price: form.price.trim() === "" ? null : Number(form.price),
           photo_url: photoPath,
         },
       });
@@ -212,6 +214,26 @@ export function PartFormDialog({ open, onOpenChange, part, onSaved }: Props) {
               value={form.quantity}
               onChange={(e) => setForm({ ...form, quantity: Number(e.target.value) })}
             />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="price">Price (£)</Label>
+            <div className="relative">
+              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                £
+              </span>
+              <Input
+                id="price"
+                type="number"
+                min={0}
+                step="0.01"
+                inputMode="decimal"
+                placeholder="0.00"
+                className="pl-7"
+                value={form.price}
+                onChange={(e) => setForm({ ...form, price: e.target.value })}
+              />
+            </div>
           </div>
 
           <div className="grid gap-2">
