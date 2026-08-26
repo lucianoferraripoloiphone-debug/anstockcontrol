@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -116,6 +116,64 @@ function Index() {
         .some((value) => String(value).toLowerCase().includes(q));
     });
   }, [parts, query, category, onlyLow, onlyZero]);
+
+  const tableRef = useRef<HTMLTableElement>(null);
+  const [widths, setWidths] = useState<Record<string, number>>({});
+
+  const columns = useMemo(() => {
+    const base: { key: string; label: string; w: number; align?: "right" }[] = [
+      { key: "photo", label: "Photo", w: 70 },
+      { key: "model", label: "Model", w: 160 },
+      { key: "category", label: "Category", w: 130 },
+      { key: "description", label: "Description", w: 260 },
+      { key: "machine", label: "Machine", w: 130 },
+      { key: "line", label: "Line", w: 110 },
+      { key: "location", label: "Location", w: 120 },
+      { key: "price", label: "Price", w: 100, align: "right" },
+      { key: "qty", label: "Qty", w: 70, align: "right" },
+      { key: "min", label: "Min", w: 70, align: "right" },
+    ];
+    if (isAdmin) base.push({ key: "actions", label: "Actions", w: 170, align: "right" });
+    return base;
+  }, [isAdmin]);
+
+  function startResize(e: React.PointerEvent, key: string) {
+    e.preventDefault();
+    e.stopPropagation();
+    const col = columns.find((c) => c.key === key);
+    const startX = e.clientX;
+    const startW = widths[key] ?? col?.w ?? 120;
+    const move = (ev: PointerEvent) => {
+      setWidths((w) => ({ ...w, [key]: Math.max(50, startW + ev.clientX - startX) }));
+    };
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+  }
+
+  function autoFit(key: string, index: number) {
+    const table = tableRef.current;
+    if (!table) return;
+    let max = 60;
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.font = "14px Barlow, sans-serif";
+    const rows = table.querySelectorAll("tr");
+    rows.forEach((row) => {
+      const cell = row.children[index] as HTMLElement | undefined;
+      if (!cell) return;
+      const text = cell.textContent?.trim() ?? "";
+      const w = ctx.measureText(text).width + 40;
+      if (w > max) max = w;
+    });
+    setWidths((w) => ({ ...w, [key]: Math.min(520, Math.ceil(max)) }));
+  }
+
+
 
   async function handleDelete(part: Part) {
     if (!confirm(`Delete "${part.model}"?`)) return;
@@ -349,36 +407,49 @@ function Index() {
 
         <Card className="mt-4">
           <CardContent className="overflow-x-auto p-0">
-            <Table>
+            <Table
+              ref={tableRef}
+              className="table-fixed [&_td]:truncate [&_td]:border-r [&_th]:border-r [&_td:last-child]:border-r-0 [&_th:last-child]:border-r-0"
+            >
+              <colgroup>
+                {columns.map((c) => (
+                  <col key={c.key} style={{ width: `${widths[c.key] ?? c.w}px` }} />
+                ))}
+              </colgroup>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[70px]">Photo</TableHead>
-                  <TableHead>Model</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Machine</TableHead>
-                  <TableHead>Line</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead className="text-right">Price</TableHead>
-                  <TableHead className="text-right">Qty</TableHead>
-                  <TableHead className="text-right">Min</TableHead>
-                  {isAdmin && (
-                    <TableHead className="sticky right-0 bg-card text-right">Actions</TableHead>
-                  )}
-
+                  {columns.map((c, i) => (
+                    <TableHead
+                      key={c.key}
+                      className={`relative select-none ${c.align === "right" ? "text-right" : ""} ${
+                        c.key === "actions" ? "sticky right-0 bg-card" : ""
+                      }`}
+                    >
+                      {c.label}
+                      <span
+                        role="separator"
+                        aria-label={`Resize ${c.label} column`}
+                        title="Drag to resize — double-click to auto-fit"
+                        onPointerDown={(e) => startResize(e, c.key)}
+                        onDoubleClick={() => autoFit(c.key, i)}
+                        className="absolute right-0 top-0 z-10 h-full w-2 translate-x-1/2 cursor-col-resize touch-none hover:bg-primary/40"
+                      />
+                    </TableHead>
+                  ))}
                 </TableRow>
+
               </TableHeader>
               <TableBody>
                 {isLoading && (
                   <TableRow>
-                    <TableCell colSpan={11} className="py-10 text-center text-muted-foreground">
+                    <TableCell colSpan={columns.length} className="py-10 text-center text-muted-foreground">
                       Loading inventory…
                     </TableCell>
                   </TableRow>
                 )}
                 {!isLoading && filtered.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={11} className="py-10 text-center text-muted-foreground">
+                    <TableCell colSpan={columns.length} className="py-10 text-center text-muted-foreground">
                       No parts match your search.
                     </TableCell>
                   </TableRow>
