@@ -49,7 +49,7 @@ import {
 } from "@/lib/inventory.functions";
 import { exportPartsPdf } from "@/lib/pdf";
 import { exportPartsXlsx } from "@/lib/xlsx";
-import type { Part } from "@/lib/types";
+import { formatGbp, type Part } from "@/lib/types";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -359,6 +359,7 @@ function Index() {
                   <TableHead>Machine</TableHead>
                   <TableHead>Line</TableHead>
                   <TableHead>Location</TableHead>
+                  <TableHead className="text-right">Price</TableHead>
                   <TableHead className="text-right">Qty</TableHead>
                   <TableHead className="text-right">Min</TableHead>
                   {isAdmin && (
@@ -370,14 +371,14 @@ function Index() {
               <TableBody>
                 {isLoading && (
                   <TableRow>
-                    <TableCell colSpan={10} className="py-10 text-center text-muted-foreground">
+                    <TableCell colSpan={11} className="py-10 text-center text-muted-foreground">
                       Loading inventory…
                     </TableCell>
                   </TableRow>
                 )}
                 {!isLoading && filtered.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={10} className="py-10 text-center text-muted-foreground">
+                    <TableCell colSpan={11} className="py-10 text-center text-muted-foreground">
                       No parts match your search.
                     </TableCell>
                   </TableRow>
@@ -438,6 +439,13 @@ function Index() {
                       <TableCell className="text-sm">{part.machine}</TableCell>
                       <TableCell className="text-sm">{part.line}</TableCell>
                       <TableCell className="text-sm">{part.location}</TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {part.price === null || part.price === undefined ? (
+                          <span className="text-muted-foreground">—</span>
+                        ) : (
+                          formatGbp(part.price)
+                        )}
+                      </TableCell>
                       <TableCell className="text-right">
                         <span
                           className={

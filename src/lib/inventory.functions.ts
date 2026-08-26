@@ -8,7 +8,7 @@ export const getInventory = createServerFn({ method: "GET" }).handler(async () =
   const { data, error } = await supabaseAdmin
     .from("parts")
     .select(
-      "id, model, description, category, quantity, min_stock, location, machine, line, photo_url",
+      "id, model, description, category, quantity, min_stock, location, machine, line, photo_url, price",
     )
     .order("category", { ascending: true })
     .order("model", { ascending: true });
@@ -72,6 +72,10 @@ export const savePart = createServerFn({ method: "POST" })
       machine: data.machine?.trim().slice(0, 200) || null,
       line: data.line?.trim().slice(0, 200) || null,
       photo_url: data.photo_url || null,
+      price:
+        data.price === null || data.price === undefined || Number.isNaN(Number(data.price))
+          ? null
+          : Math.max(0, Number(data.price)),
     };
 
     if (data.id) {

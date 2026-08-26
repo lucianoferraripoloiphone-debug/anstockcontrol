@@ -9,8 +9,14 @@ export type Part = {
   machine: string | null;
   line: string | null;
   photo_url: string | null;
+  price: number | null;
   photo_signed_url?: string | null;
 };
+
+export function formatGbp(value: number | null | undefined) {
+  if (value === null || value === undefined) return "";
+  return new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(value);
+}
 
 export type PartInput = {
   id?: string;
@@ -23,6 +29,7 @@ export type PartInput = {
   machine?: string | null;
   line?: string | null;
   photo_url?: string | null;
+  price?: number | null;
 };
 
 export const CATEGORIES = [

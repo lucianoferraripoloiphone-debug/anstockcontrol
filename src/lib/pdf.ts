@@ -22,7 +22,9 @@ export function exportPartsPdf(parts: Part[], title: string) {
 
   autoTable(doc, {
     startY: 76,
-    head: [["Model", "Category", "Description", "Machine", "Line", "Location", "Qty", "Min"]],
+    head: [
+      ["Model", "Category", "Description", "Machine", "Line", "Location", "Price", "Qty", "Min"],
+    ],
     body: parts.map((p) => [
       p.model,
       p.category ?? "",
@@ -30,6 +32,7 @@ export function exportPartsPdf(parts: Part[], title: string) {
       p.machine ?? "",
       p.line ?? "",
       p.location ?? "",
+      p.price === null || p.price === undefined ? "" : `GBP ${p.price.toFixed(2)}`,
       String(p.quantity),
       String(p.min_stock),
     ]),
@@ -38,16 +41,17 @@ export function exportPartsPdf(parts: Part[], title: string) {
     alternateRowStyles: { fillColor: [244, 247, 251] },
     columnStyles: {
       0: { cellWidth: 110, fontStyle: "bold" },
-      2: { cellWidth: 200 },
-      6: { cellWidth: 40, halign: "right" },
+      2: { cellWidth: 180 },
+      6: { cellWidth: 60, halign: "right" },
       7: { cellWidth: 40, halign: "right" },
+      8: { cellWidth: 40, halign: "right" },
     },
     didParseCell: (data) => {
       if (data.section === "body") {
         const part = parts[data.row.index];
         if (part && part.quantity <= part.min_stock) {
           data.cell.styles.textColor = [170, 40, 30];
-          if (data.column.index === 6) data.cell.styles.fontStyle = "bold";
+          if (data.column.index === 7) data.cell.styles.fontStyle = "bold";
         }
       }
     },
