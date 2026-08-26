@@ -8,7 +8,7 @@ export const getInventory = createServerFn({ method: "GET" }).handler(async () =
   const { data, error } = await supabaseAdmin
     .from("parts")
     .select(
-      "id, model, description, category, quantity, min_stock, location, machine, line, photo_url",
+      "id, model, description, category, quantity, min_stock, location, machine, line, photo_url, price",
     )
     .order("category", { ascending: true })
     .order("model", { ascending: true });
