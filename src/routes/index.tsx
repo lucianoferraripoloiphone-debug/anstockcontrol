@@ -442,14 +442,14 @@ function Index() {
               <TableBody>
                 {isLoading && (
                   <TableRow>
-                    <TableCell colSpan={11} className="py-10 text-center text-muted-foreground">
+                    <TableCell colSpan={columns.length} className="py-10 text-center text-muted-foreground">
                       Loading inventory…
                     </TableCell>
                   </TableRow>
                 )}
                 {!isLoading && filtered.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={11} className="py-10 text-center text-muted-foreground">
+                    <TableCell colSpan={columns.length} className="py-10 text-center text-muted-foreground">
                       No parts match your search.
                     </TableCell>
                   </TableRow>
