@@ -42,6 +42,7 @@ const empty = {
   location: "",
   machine: "",
   line: "",
+  price: "",
 };
 
 export function PartFormDialog({ open, onOpenChange, part, onSaved }: Props) {
