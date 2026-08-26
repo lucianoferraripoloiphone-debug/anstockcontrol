@@ -51,7 +51,7 @@ export function exportPartsPdf(parts: Part[], title: string) {
         const part = parts[data.row.index];
         if (part && part.quantity <= part.min_stock) {
           data.cell.styles.textColor = [170, 40, 30];
-          if (data.column.index === 6) data.cell.styles.fontStyle = "bold";
+          if (data.column.index === 7) data.cell.styles.fontStyle = "bold";
         }
       }
     },

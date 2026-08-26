@@ -49,7 +49,7 @@ import {
 } from "@/lib/inventory.functions";
 import { exportPartsPdf } from "@/lib/pdf";
 import { exportPartsXlsx } from "@/lib/xlsx";
-import type { Part } from "@/lib/types";
+import { formatGbp, type Part } from "@/lib/types";
 
 export const Route = createFileRoute("/")({
   head: () => ({
