@@ -26,6 +26,7 @@ export type Database = {
           min_stock: number
           model: string
           photo_url: string | null
+          price: number | null
           quantity: number
           updated_at: string
         }
@@ -40,6 +41,7 @@ export type Database = {
           min_stock?: number
           model: string
           photo_url?: string | null
+          price?: number | null
           quantity?: number
           updated_at?: string
         }
@@ -54,6 +56,7 @@ export type Database = {
           min_stock?: number
           model?: string
           photo_url?: string | null
+          price?: number | null
           quantity?: number
           updated_at?: string
         }
