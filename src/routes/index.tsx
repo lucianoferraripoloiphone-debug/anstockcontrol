@@ -97,6 +97,7 @@ function Index() {
   const [gateOpen, setGateOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [photoOpen, setPhotoOpen] = useState(false);
+  const [scanOpen, setScanOpen] = useState(false);
   const [editing, setEditing] = useState<Part | null>(null);
 
   const categories = useMemo(
