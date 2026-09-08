@@ -323,6 +323,23 @@ function Index() {
               variant="default"
               size="icon"
               className="h-12 w-12 shrink-0 rounded-xl shadow-sm"
+              onClick={() => {
+                if (!isAdmin) {
+                  setGateOpen(true);
+                  return;
+                }
+                setScanOpen(true);
+              }}
+              aria-label="Scan QR to withdraw"
+              title="Scan QR to withdraw"
+            >
+              <QrCode className="h-6 w-6" />
+            </Button>
+
+            <Button
+              variant="default"
+              size="icon"
+              className="h-12 w-12 shrink-0 rounded-xl shadow-sm"
               onClick={() => setPhotoOpen(true)}
               aria-label="Photo search"
               title="Photo search"
