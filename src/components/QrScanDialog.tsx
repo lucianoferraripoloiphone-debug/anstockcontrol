@@ -35,7 +35,7 @@ export function QrScanDialog({
     const handle = async (code: string) => {
       const now = Date.now();
       if (busyRef.current) return;
-      if (lastRef.current.code === code && now - lastRef.current.at < 2500) return;
+      if (now - lastRef.current.at < 3000) return;
       lastRef.current = { code, at: now };
       busyRef.current = true;
       try {
