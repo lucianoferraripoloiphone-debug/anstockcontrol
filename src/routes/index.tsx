@@ -13,6 +13,7 @@ import {
   Package,
   Pencil,
   Plus,
+  QrCode,
   Search,
   Trash2,
 } from "lucide-react";
@@ -22,6 +23,8 @@ const logo = "/__l5e/assets-v1/198b100d-f9fb-4b15-9ad5-49864912c89d/applied-nutr
 import { AdminGateDialog } from "@/components/AdminGateDialog";
 import { PartFormDialog } from "@/components/PartFormDialog";
 import { PhotoSearchDialog } from "@/components/PhotoSearchDialog";
+import { QrScanDialog } from "@/components/QrScanDialog";
+import { exportQrLabelsPdf } from "@/lib/qr-labels";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -94,6 +97,7 @@ function Index() {
   const [gateOpen, setGateOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [photoOpen, setPhotoOpen] = useState(false);
+  const [scanOpen, setScanOpen] = useState(false);
   const [editing, setEditing] = useState<Part | null>(null);
 
   const categories = useMemo(
@@ -319,6 +323,23 @@ function Index() {
               variant="default"
               size="icon"
               className="h-12 w-12 shrink-0 rounded-xl shadow-sm"
+              onClick={() => {
+                if (!isAdmin) {
+                  setGateOpen(true);
+                  return;
+                }
+                setScanOpen(true);
+              }}
+              aria-label="Scan QR to withdraw"
+              title="Scan QR to withdraw"
+            >
+              <QrCode className="h-6 w-6" />
+            </Button>
+
+            <Button
+              variant="default"
+              size="icon"
+              className="h-12 w-12 shrink-0 rounded-xl shadow-sm"
               onClick={() => setPhotoOpen(true)}
               aria-label="Photo search"
               title="Photo search"
@@ -364,6 +385,22 @@ function Index() {
               disabled={lowStock.length === 0}
             >
               <Sheet className="h-3.5 w-3.5" /> Excel low
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 gap-1.5 px-2.5 text-xs"
+              onClick={() => {
+                toast.promise(exportQrLabelsPdf(filtered), {
+                  loading: "Building QR labels…",
+                  success: "QR labels ready",
+                  error: "Could not build QR labels",
+                });
+              }}
+              disabled={filtered.length === 0}
+            >
+              <QrCode className="h-3.5 w-3.5" /> QR labels
             </Button>
 
             {isAdmin && (
@@ -592,6 +629,7 @@ function Index() {
         part={editing}
         onSaved={() => void refetch()}
       />
+      <QrScanDialog open={scanOpen} onOpenChange={setScanOpen} onChanged={() => void refetch()} />
       <PhotoSearchDialog
         open={photoOpen}
         onOpenChange={setPhotoOpen}

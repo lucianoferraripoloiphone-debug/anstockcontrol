@@ -127,6 +127,41 @@ export const adjustQuantity = createServerFn({ method: "POST" })
     return { ok: true as const, quantity: next };
   });
 
+export const withdrawByCode = createServerFn({ method: "POST" })
+  .inputValidator((data: { code: string; amount?: number }) => data)
+  .handler(async ({ data }) => {
+    const { requireUnlocked } = await import("./gate.server");
+    await requireUnlocked();
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const raw = (data.code ?? "").trim();
+    if (!raw) throw new Error("Empty code");
+    const amount = Math.max(1, Math.trunc(Number(data.amount) || 1));
+
+    const code = raw.replace(/^.*\/part\//i, "");
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(code);
+
+    const query = supabaseAdmin.from("parts").select("id, model, quantity");
+    const { data: found, error } = isUuid
+      ? await query.eq("id", code).maybeSingle()
+      : await query.ilike("model", code).limit(1).maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!found) throw new Error(`No part found for code "${code.slice(0, 40)}"`);
+
+    if (found.quantity <= 0) {
+      return { id: found.id, model: found.model, quantity: 0, changed: false as const };
+    }
+
+    const next = Math.max(0, found.quantity - amount);
+    const { error: updateError } = await supabaseAdmin
+      .from("parts")
+      .update({ quantity: next })
+      .eq("id", found.id);
+    if (updateError) throw new Error(updateError.message);
+
+    return { id: found.id, model: found.model, quantity: next, changed: true as const };
+  });
+
 export const uploadPartPhoto = createServerFn({ method: "POST" })
   .inputValidator((data: { dataUrl: string; filename: string }) => data)
   .handler(async ({ data }) => {
