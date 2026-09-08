@@ -629,6 +629,7 @@ function Index() {
         part={editing}
         onSaved={() => void refetch()}
       />
+      <QrScanDialog open={scanOpen} onOpenChange={setScanOpen} onChanged={() => void refetch()} />
       <PhotoSearchDialog
         open={photoOpen}
         onOpenChange={setPhotoOpen}
