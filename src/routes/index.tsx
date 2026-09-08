@@ -13,6 +13,7 @@ import {
   Package,
   Pencil,
   Plus,
+  QrCode,
   Search,
   Trash2,
 } from "lucide-react";
