@@ -23,6 +23,8 @@ const logo = "/__l5e/assets-v1/198b100d-f9fb-4b15-9ad5-49864912c89d/applied-nutr
 import { AdminGateDialog } from "@/components/AdminGateDialog";
 import { PartFormDialog } from "@/components/PartFormDialog";
 import { PhotoSearchDialog } from "@/components/PhotoSearchDialog";
+import { QrScanDialog } from "@/components/QrScanDialog";
+import { exportQrLabelsPdf } from "@/lib/qr-labels";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
