@@ -387,6 +387,22 @@ function Index() {
               <Sheet className="h-3.5 w-3.5" /> Excel low
             </Button>
 
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 gap-1.5 px-2.5 text-xs"
+              onClick={() => {
+                toast.promise(exportQrLabelsPdf(filtered), {
+                  loading: "Building QR labels…",
+                  success: "QR labels ready",
+                  error: "Could not build QR labels",
+                });
+              }}
+              disabled={filtered.length === 0}
+            >
+              <QrCode className="h-3.5 w-3.5" /> QR labels
+            </Button>
+
             {isAdmin && (
               <Button
                 size="sm"
